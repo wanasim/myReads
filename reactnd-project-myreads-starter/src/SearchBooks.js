@@ -10,30 +10,36 @@ class SearchBooks extends Component{
    }
 
    state= {
-      query:''
+      query:'',
+      showingBooks:[]
    }
 
-   updateQuery = (event) => {
+   updateQuery = (query) => {
       this.setState({
-         query: event.target.value.trim()
+         query:query
       })
+      if(query){
+         BooksAPI.search(query.trim(), 20)
+         .then((response)=>{
+            if(!response || response.error){
+                    this.setState({showingBooks: []})
+                } else {
+                  //  this.bookShelf(response)
+                    this.setState({showingBooks:response})
+                }
+            this.setState({showingBooks:response})
+            console.log("showing", this.state.showingBooks)
+         })
+      }
+      else{
+         this.setState({showingBooks:[]})
+      }
    }
 
 
    render() {
       const {books, changeShelf} = this.props
-      const {query} = this.state
-      let showingBooks
-
-      if(query){
-         BooksAPI.search(query, 20)
-         .then(function(response){
-            console.log(response)
-         })
-      }
-      else{
-         showingBooks = books
-      }
+      const {query, showingBooks} = this.state
 
       return (
          <div className="search-books">
@@ -47,13 +53,13 @@ class SearchBooks extends Component{
                   However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
                   you don't find a specific author or title. Every search is limited by search terms.
                 */}
-                <input type="text" placeholder="Search by title or author" value={query} onChange={(event)=>this.updateQuery(event)}/>
+                <input type="text" placeholder="Search by title or author" value={query} onChange={(event)=>this.updateQuery(event.target.value)}/>
 
               </div>
             </div>
             <div className="search-books-results">
               <ol className="books-grid">
-              {books.map((book)=>(
+              {showingBooks.map((book)=>(
                 <li key={book.id}>
                   <div className="book">
                     <div className="book-top">
@@ -64,11 +70,12 @@ class SearchBooks extends Component{
                           <option value="currentlyReading">Currently Reading</option>
                           <option value="wantToRead">Want to Read</option>
                           <option value="read">Read</option>
+                          <option value="none">None</option>
                         </select>
                       </div>
                     </div>
                     <div className="book-title">{book.title}</div>
-                    <div className="book-authors">{book.authors.map((author)=>(
+                    <div className="book-authors">{books.authors && book.authors.map((author)=>(
 
                           <div key={author} className="book-authors">{author}</div>
 
