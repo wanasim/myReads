@@ -27,21 +27,21 @@ class BooksApp extends React.Component {
      })
    }
 
-   componentDidMount = () => {
-       this.getAllBooks()
-   }
-
    changeShelf = (book, shelf) => {
       BooksAPI.update(book,shelf)
       .then((response)=>{
          console.log('updated books', response)
          book.shelf = shelf
          this.setState(state => ({
-               books:state.books.filter(prevBook=>
-                  prevBook.id !== book.id).concat([book])
-         }))
-      })
+            books:state.books.filter(prevBook=>
+               prevBook.id !== book.id).concat([book])
+            }))
+         })
+      }
+   componentDidMount = () => {
+       this.getAllBooks()
    }
+
 
 
   render() {
