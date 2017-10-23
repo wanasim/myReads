@@ -3,21 +3,22 @@ import * as BooksAPI from './BooksAPI'
 import {Link} from 'react-router-dom'
 import PropTypes from 'prop-types'
 
-class SearchBooks extends Component{
-   static PropTypes = {
+export default class SearchBooks extends Component{
+   state= {
+      showingBooks:[],
+      bookQuery:''
+   }
+
+   propTypes = {
       books: PropTypes.array.isRequired,
       changeShelf: PropTypes.func.isRequired,
    }
 
-   state= {
-      query:'',
-      showingBooks:[]
-   }
 
-   updateQuery = (query) => {
-      this.setState({query})
-      if(query){
-         BooksAPI.search(query.trim(), 20)
+   updateQuery = (bookQuery) => {
+      this.setState({bookQuery})
+      if(bookQuery){
+         BooksAPI.search(bookQuery.trim(), 20)
          .then((response)=>{
             if(!response || response.error){
                     this.setState({showingBooks: []})
@@ -38,7 +39,7 @@ class SearchBooks extends Component{
 
    render() {
       const {books, changeShelf} = this.props
-      const {query, showingBooks} = this.state
+      const {bookQuery, showingBooks} = this.state
 
       return (
          <div className="search-books">
@@ -52,7 +53,7 @@ class SearchBooks extends Component{
                   However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
                   you don't find a specific author or title. Every search is limited by search terms.
                 */}
-                <input type="text" placeholder="Search by title or author" value={query} onChange={(event)=>this.updateQuery(event.target.value)}/>
+                <input type="text" placeholder="Search by title or author" value={bookQuery} onChange={(event)=>this.updateQuery(event.target.value)}/>
 
               </div>
             </div>
@@ -62,7 +63,7 @@ class SearchBooks extends Component{
                 <li key={book.id}>
                   <div className="book">
                     <div className="book-top">
-                      <div className="book-cover" style={{ width: 128, height: 193, backgroundImage:  `url(${book.imageLinks? book.imageLinks.thumbnail : 'http://cdn.earthporm.com/wp-content/uploads/2015/10/XX-Proud-Mommies5__605.jpg'})`  }}></div>
+                      <div className="book-cover" style={{ width: 128, height: 193, backgroundImage:  `url(${book.imageLinks ? book.imageLinks.thumbnail : 'http://cdn.earthporm.com/wp-content/uploads/2015/10/XX-Proud-Mommies5__605.jpg'})`  }}></div>
                       <div className="book-shelf-changer">
                         <select value={book.shelf} onChange={(event) => changeShelf(book,event.target.value)}>
                           <option value="none" disabled>Move to...</option>
@@ -89,5 +90,3 @@ class SearchBooks extends Component{
       )
    }
 }
-
-export default SearchBooks
