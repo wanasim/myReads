@@ -18,7 +18,7 @@ class BooksApp extends React.Component {
     books:[]
 }
 
-   getAllBooks = () => {
+   getBooks = () => {
      BooksAPI.getAll()
      .then((books)=>{
         this.setState({books})
@@ -39,7 +39,7 @@ class BooksApp extends React.Component {
          })
       }
    componentDidMount = () => {
-       this.getAllBooks()
+       this.getBooks()
    }
 
 
