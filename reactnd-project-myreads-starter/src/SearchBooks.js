@@ -15,14 +15,13 @@ class SearchBooks extends Component{
    }
 
    updateQuery = (query) => {
-      this.setState({
-         query:query
-      })
+      this.setState({query})
       if(query){
          BooksAPI.search(query.trim(), 20)
          .then((response)=>{
             if(!response || response.error){
                     this.setState({showingBooks: []})
+                    console.log("no response from book api")
                 } else {
                   //  this.bookShelf(response)
                     this.setState({showingBooks:response})
@@ -63,7 +62,7 @@ class SearchBooks extends Component{
                 <li key={book.id}>
                   <div className="book">
                     <div className="book-top">
-                      <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.thumbnail})` }}></div>
+                      <div className="book-cover" style={{ width: 128, height: 193, backgroundImage:  `url(${book.imageLinks? book.imageLinks.thumbnail : 'http://cdn.earthporm.com/wp-content/uploads/2015/10/XX-Proud-Mommies5__605.jpg'})`  }}></div>
                       <div className="book-shelf-changer">
                         <select value={book.shelf} onChange={(event) => changeShelf(book,event.target.value)}>
                           <option value="none" disabled>Move to...</option>
