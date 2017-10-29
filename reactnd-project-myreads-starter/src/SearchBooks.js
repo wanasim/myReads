@@ -1,7 +1,9 @@
-import React, {Component} from 'react'
-import * as BooksAPI from './BooksAPI'
-import {Link} from 'react-router-dom'
-import PropTypes from 'prop-types'
+import React, {Component} from 'react';
+import * as BooksAPI from './BooksAPI';
+import {Link} from 'react-router-dom';
+import PropTypes from 'prop-types';
+// import {Debounce} from 'react-throttle';
+import {DebounceInput} from 'react-debounce-input';
 
 export default class SearchBooks extends Component{
    state= {
@@ -17,17 +19,19 @@ export default class SearchBooks extends Component{
 
    updateQuery = (bookQuery) => {
       this.setState({bookQuery})
+      console.log("bookQuery", bookQuery)
       if(bookQuery){
          BooksAPI.search(bookQuery.trim(), 20)
          .then((response)=>{
             if(!response || response.error){
                     this.setState({showingBooks: []})
                     console.log("no response from book api")
-                } else {
-                  //  this.bookShelf(response)
-                    this.setState({showingBooks:response})
-                }
-            this.setState({showingBooks:response})
+             } else {
+               //  this.bookShelf(response)
+               this.shelfExist(response)
+               this.setState({showingBooks:response})
+             }
+
             console.log("showing", this.state.showingBooks)
          })
       }
@@ -36,6 +40,18 @@ export default class SearchBooks extends Component{
       }
    }
 
+   shelfExist = (newBooks) => {
+      for ( let book of this.props.books){
+         for( let newBook of newBooks){
+            if(book.id==newBook.id){
+               newBook.shelf = book.shelf
+            }
+            else{
+               newBook.shelf = 'none'
+            }
+         }
+      }
+   }
 
    render() {
       const {books, changeShelf} = this.props
@@ -53,12 +69,19 @@ export default class SearchBooks extends Component{
                   However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
                   you don't find a specific author or title. Every search is limited by search terms.
                 */}
-                <input type="text" placeholder="Search by title or author" onChange={(event)=>this.updateQuery(event.target.value)} value={bookQuery}/>
+
+
+
+               <DebounceInput debounceTimeout={300} type="text" placeholder="Search by title or author" onChange={(event)=>this.updateQuery(event.target.value)} value={bookQuery}/>
+
 
               </div>
             </div>
             <div className="search-books-results">
               <ol className="books-grid">
+
+
+
               {showingBooks.map((book)=>(
                 <li key={book.id}>
                   <div className="book">
