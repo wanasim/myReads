@@ -13,7 +13,7 @@ class BookSelection extends Component{
       changeShelf:PropTypes.func.isRequired
    }
    render(){
-      const {books, shelf, changeShelf} = this.props;
+      const {books, changeShelf} = this.props;
       console.log("books", books)
 
 

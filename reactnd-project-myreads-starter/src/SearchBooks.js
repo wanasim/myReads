@@ -27,9 +27,8 @@ export default class SearchBooks extends Component{
                     this.setState({showingBooks: []})
                     console.log("no response from book api")
              } else {
-               //  this.bookShelf(response)
-               this.shelfExist(response)
-               this.setState({showingBooks:response})
+               //  calls on shelfExist function with  query response as paramater. function returns an updated array of newBooks with appropriate shelves
+               this.setState({showingBooks:this.shelfExist(response)})
              }
 
             console.log("showing", this.state.showingBooks)
@@ -41,16 +40,19 @@ export default class SearchBooks extends Component{
    }
 
    shelfExist = (newBooks) => {
-      for ( let book of this.props.books){
-         for( let newBook of newBooks){
-            if(book.id==newBook.id){
-               newBook.shelf = book.shelf
-            }
-            else{
-               newBook.shelf = 'none'
-            }
+      newBooks = newBooks.map(book => {
+         const found = this.props.books.find(b => b.id === book.id)
+         if(found){
+            book.shelf = found.shelf
+         }else{
+            book.shelf = 'none'
          }
-      }
+         // return book to newBooks array with updated shelf
+         return book
+      })
+      // return updated array of newBooks
+      console.log("BOOOOK123", newBooks)
+      return newBooks
    }
 
    render() {
@@ -88,7 +90,7 @@ export default class SearchBooks extends Component{
                     <div className="book-top">
                       <div className="book-cover" style={{ width: 128, height: 193, backgroundImage:  `url(${book.imageLinks ? book.imageLinks.thumbnail : 'http://cdn.earthporm.com/wp-content/uploads/2015/10/XX-Proud-Mommies5__605.jpg'})`  }}></div>
                       <div className="book-shelf-changer">
-                        <select value={book.shelf} onChange={(event) => changeShelf(book,event.target.value)}>
+                     <select value={book.shelf} onChange={(event) => changeShelf(book,event.target.value)}>
                           <option value="none" disabled>Move to...</option>
                           <option value="currentlyReading">Currently Reading</option>
                           <option value="wantToRead">Want to Read</option>

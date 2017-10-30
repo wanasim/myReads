@@ -12,7 +12,7 @@ function BookShelf(props) {
                        <ol className="books-grid">
                        {props.books.map((book)=>(
                          <li key={book.id}>
-                           <BookInfo book = {book} changeShelf = {props.changeShelf}/>
+                           <BookInfo book={book} changeShelf={props.changeShelf}/>
 
                          </li>
 
