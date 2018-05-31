@@ -73,7 +73,7 @@ export default class SearchBooks extends Component{
                 */}
 
 
-
+                //sets a timer after user is done typing 
                <DebounceInput debounceTimeout={300} type="text" placeholder="Search by title or author" onChange={(event)=>this.updateQuery(event.target.value)} value={bookQuery}/>
 
 
